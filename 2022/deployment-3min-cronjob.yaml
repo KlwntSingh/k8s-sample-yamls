@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: standard-cronjob
+spec:
+  schedule: "59/12 * * * *"
+  jobTemplate: 
+    spec: 
+      template:
+        metadata:
+          labels:
+            app: standard-cronjob
+            tier: backend
+            track: stable
+        spec:
+          containers:
+          - name: standard-cronjob
+            image: mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2022
+            command: 
+            - powershell.exe
+            - -command
+            - " Start-Sleep -Seconds 180 "
+          restartPolicy: Never
+          nodeSelector:
+            kubernetes.io/os: windows
+

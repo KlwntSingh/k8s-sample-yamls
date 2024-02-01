@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: standard-small-replica
+spec:
+  selector:
+    matchLabels:
+      app: standard-small-replica
+      tier: backend
+      track: stable
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: standard-small-replica
+        tier: backend
+        track: stable
+    spec:
+      containers:
+      - name: standard-small-replica
+        image: mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2022
+        command: 
+        - powershell.exe
+        - -command
+        - " ping -t google.com "
+      nodeSelector:
+        kubernetes.io/os: windows
+

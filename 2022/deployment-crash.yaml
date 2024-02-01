@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: standard-crash
+spec:
+  selector:
+    matchLabels:
+      app: standard-crash
+      tier: backend
+      track: stable
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: standard-crash
+        tier: backend
+        track: stable
+    spec:
+      containers:
+      - name: standard-crash
+        image: mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2022
+        command: 
+        - powershell.exe
+        - -command
+        - " Start-Sleep -Seconds 30; exit "
+      nodeSelector:
+        kubernetes.io/os: windows
+

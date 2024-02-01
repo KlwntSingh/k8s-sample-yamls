@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: multiple-containers
+  namespace: multiple-containers
+spec:
+  selector:
+    matchLabels:
+      app: multiple-containers
+      tier: backend
+      track: stable
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: multiple-containers
+        tier: backend
+        track: stable
+    spec:
+      containers:
+      - name: multiple-containers-container-1
+        image: mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2022
+        command: 
+        - powershell.exe
+        - -command
+        - " ping -t google.com "
+      - name: multiple-containers-container-2
+        image: mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2022
+        command: 
+        - powershell.exe
+        - -command
+        - " ping -t amazon.com "
+      nodeSelector:
+        kubernetes.io/os: windows
+

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: standard-network-storage
+spec:
+  selector:
+    matchLabels:
+      app: standard-network-storage
+      tier: backend
+      track: stable
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: standard-network-storage
+        tier: backend
+        track: stable
+    spec:
+      containers:
+      - name: standard-network-storage
+        image: mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2022
+        command: 
+        - powershell.exe
+        - -command
+        - mkdir dload; for (($j = 0); $j -lt 100000; $j++){ $source = 'http://speedtest.tele2.net/10MB.zip'; $destination = 'c:\dload\10MB$j.zip'; Invoke-WebRequest -Uri $source -OutFile $destination; Start-Sleep -Seconds 300;}
+      nodeSelector:
+        kubernetes.io/os: windows
+
