@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: standard-daemonset
+  namespace: windows-daemonset
+spec:
+  selector:
+    matchLabels:
+      app: standard-daemonset
+      tier: backend
+      track: stable
+  template:
+    metadata:
+      labels:
+        app: standard-daemonset
+        tier: backend
+        track: stable
+    spec:
+      containers:
+      - name: standard-daemonset
+        image: mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2019
+        command: 
+        - powershell.exe
+        - -command
+        - " ping -t google.com "
+      nodeSelector:
+        kubernetes.io/os: windows
+

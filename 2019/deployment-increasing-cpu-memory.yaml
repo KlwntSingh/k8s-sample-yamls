@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: standard-memory-cpu
+spec:
+  selector:
+    matchLabels:
+      app: standard-memory-cpu
+      tier: backend
+      track: stable
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: standard-memory-cpu
+        tier: backend
+        track: stable
+    spec:
+      containers:
+      - name: standard-2022-deployment
+        image: mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2019
+        command: 
+        - powershell.exe
+        - -command
+        - " $outItems = New-Object System.Collections.Generic.List[System.Object]; for (($j = 0); $j -lt 100000; $j++){for (($i = 0); $i -lt 10000000; $i++){$outItems.Add($i);}Start-Sleep -Seconds 5;} "
+      nodeSelector:
+        kubernetes.io/os: windows
+

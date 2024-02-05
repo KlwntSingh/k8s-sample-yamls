@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-web-service
+  namespace: web-service
+spec:
+  selector:
+    matchLabels:
+      app: deployment-web-service
+      tier: backend
+      track: stable
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: deployment-web-service
+        tier: backend
+        track: stable
+    spec:
+      containers:
+      - name: deployment-web-service
+        image: mcr.microsoft.com/windows/servercore/iis:windowsservercore-ltsc2019
+        command: 
+        - powershell.exe
+        - -command
+        - "Add-WindowsFeature Web-Server; Invoke-WebRequest -UseBasicParsing -Uri 'https://dotnetbinaries.blob.core.windows.net/servicemonitor/2.0.1.6/ServiceMonitor.exe' -OutFile 'C:\\ServiceMonitor.exe'; echo '<html><body><br/><br/><H1>Windows Container Workshop - Windows LTSC2019!!!<H1></body><html>' > C:\\inetpub\\wwwroot\\iisstart.htm; C:\\ServiceMonitor.exe 'w3svc'; "
+      nodeSelector:
+        kubernetes.io/os: windows
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: standard-2022-service
+  namespace: web-service
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: deployment-web-service
+    tier: backend
+    track: stable
+  sessionAffinity: None
+  type: LoadBalancer
